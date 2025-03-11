@@ -25,7 +25,7 @@ class ParkingService
     {
 
         $validator = Validator::make($data, [
-            'name' => 'required|string|min:6',
+            'name' => 'required|string',
             'location' => 'required|string',
             'total_places' => 'required|integer',
             'available_places' => 'required|integer'
@@ -36,5 +36,51 @@ class ParkingService
         }
 
         return Parking::create($data);
+    }
+
+    public function getParkingById($id)
+    {
+        $parking = Parking::find($id);
+
+        if (!$parking) {
+            throw new Exception('Parking record not found.');
+        }
+
+        return $parking;
+    }
+
+    public function updateParking($id, array $data)
+    {
+        $parking = Parking::find($id);
+
+        if (!$parking) {
+            throw new \Exception('Parking record not found.');
+        }
+
+        $validator = Validator::make($data, [
+            'name' => 'sometimes|string',
+            'location' => 'sometimes|string',
+            'total_places' => 'sometimes|integer',
+            'available_places' => 'sometimes|integer',
+        ]);
+
+        if ($validator->fails()) {
+            throw new ValidationException($validator);
+        }
+
+        $parking->update($data);
+        return $parking;
+    }
+
+    public function deleteParking($id)
+    {
+        $parking = Parking::find($id);
+
+        if (!$parking) {
+            throw new \Exception('Parking record not found.');
+        }
+
+        $parking->delete();
+        return response()->noContent();
     }
 }

@@ -22,7 +22,17 @@ class ParkingController extends Controller
     {
         try {
             $parkings = $this->parkingService->getAllParkings();
-            return ParkingResource::collection($parkings);
+            return response()->json($parkings);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 404);
+        }
+    }
+
+    public function show($id)
+    {
+        try {
+            $parking = $this->parkingService->getParkingById($id);
+            return response()->json($parking);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 404);
         }
@@ -32,11 +42,33 @@ class ParkingController extends Controller
     {
         try {
             $parking = $this->parkingService->createParking($request->all());
-            return new ParkingResource($parking);
+            return response()->json($parking, 201);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         } catch (ValidationException $e) {
             return response()->json(['error' => $e->errors()], 422);
+        }
+    }
+
+    public function update(Request $request, $id)
+    {
+        try {
+            $parking = $this->parkingService->updateParking($id, $request->all());
+            return response()->json($parking);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 404);
+        } catch (ValidationException $e) {
+            return response()->json(['error' => $e->errors()], 422);
+        }
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $this->parkingService->deleteParking($id);
+            return response()->noContent();
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 404);
         }
     }
 }
