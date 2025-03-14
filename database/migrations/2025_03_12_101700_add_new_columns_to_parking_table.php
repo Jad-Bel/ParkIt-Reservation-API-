@@ -11,11 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('reservations', function (Blueprint $table) {
-            $table->id();
-            $table->date('arrival_time');
-            $table->date('departure time ');
-            $table->timestamps();
+        Schema::table('parking', function (Blueprint $table) {
+            $table->decimal('latitude', 10, 8)->after('location');
+            $table->decimal('longitude', 11, 8)->after('latitude');
         });
     }
 
@@ -24,6 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('reservations');
+        Schema::table('parking', function (Blueprint $table) {
+            $table->dropColumn(['latitude', 'longitude']);
+        });
     }
 };

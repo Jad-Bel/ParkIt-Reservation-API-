@@ -83,4 +83,25 @@ class ParkingService
         $parking->delete();
         return response()->noContent();
     }
+
+    public function searchParkings($latitude, $Longitude, $radius)
+    {
+        $earthRadius = 6371;
+
+        $maxLat = $latitude + rad2deg($radius / $earthRadius);
+        $minLat = $latitude - rad2deg($radius / $earthRadius);
+        $maxLon = $Longitude + rad2deg(asin($radius / $earthRadius) / cos(deg2rad($latitude)));
+        $minLon = $Longitude - rad2deg(asin($radius / $earthRadius) / cos(deg2rad($latitude)));
+
+        $parkings = Parking::whereBetween('latitude', [$minLat, $maxLat])
+                           ->whereBetween('longitude', [$minLon, $maxLon])
+                           ->where('available_places', '>', 0)
+                           ->get();
+
+        if ($parkings->isEmpty()) {
+            throw new Exception('No available parkings found within the specified area');
+        }
+
+        return $parkings;
+    }
 }

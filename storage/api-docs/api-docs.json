@@ -1,0 +1,572 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Parking Reservation API",
+        "description": "API for managing parking spot reservations, including booking, cancellation, and retrieving user reservations.",
+        "termsOfService": "http://example.com/terms",
+        "contact": {
+            "email": "support@example.com"
+        },
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/admin/parking-statistics": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Retrieve parking statistics",
+                "description": "Fetch various statistics related to parking occupancy and availability.",
+                "operationId": "59d1ad1d07193ed75d0efa2505328539",
+                "responses": {
+                    "200": {
+                        "description": "Successful response with parking statistics",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "total_parkings": {
+                                            "type": "integer",
+                                            "example": 50
+                                        },
+                                        "occupied": {
+                                            "type": "integer",
+                                            "example": 30
+                                        },
+                                        "available": {
+                                            "type": "integer",
+                                            "example": 20
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/register": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Register a new user",
+                "operationId": "76a1cbaea48a581595406d4dd685cc2c",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "John Doe"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "johndoe@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User registered successfully"
+                    },
+                    "400": {
+                        "description": "Bad request, validation error"
+                    }
+                }
+            }
+        },
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "User login",
+                "operationId": "dcf90ce65219b0ad51fc32e9f7f69843",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "johndoe@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User logged in successfully"
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid credentials"
+                    }
+                }
+            }
+        },
+        "/api/logout": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "User logout",
+                "operationId": "2a5c5c6e21dd0583f5d700d2f707f03f",
+                "responses": {
+                    "200": {
+                        "description": "User logged out successfully"
+                    },
+                    "401": {
+                        "description": "Unauthorized - User not authenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/parkings": {
+            "get": {
+                "tags": [
+                    "Parking"
+                ],
+                "summary": "Get all parkings",
+                "operationId": "8f7c807501d1c0e5fe7273b66e5e838b",
+                "responses": {
+                    "200": {
+                        "description": "List of all parkings"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Parking"
+                ],
+                "summary": "Create a new parking",
+                "operationId": "bec4db4758c912f3eed2404dced269a2",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "location",
+                                    "capacity"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Central Parking"
+                                    },
+                                    "location": {
+                                        "type": "string",
+                                        "example": "Downtown, City"
+                                    },
+                                    "capacity": {
+                                        "type": "integer",
+                                        "example": 100
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Parking created successfully"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/parkings/{id}": {
+            "get": {
+                "tags": [
+                    "Parking"
+                ],
+                "summary": "Get a parking by ID",
+                "operationId": "9ee165016e82d3ac7a703a548cbf54ca",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Parking details"
+                    },
+                    "404": {
+                        "description": "Parking not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Parking"
+                ],
+                "summary": "Update an existing parking",
+                "operationId": "075630bf013386e46f257884d91d2579",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "location",
+                                    "capacity"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Updated Parking Name"
+                                    },
+                                    "location": {
+                                        "type": "string",
+                                        "example": "New Location"
+                                    },
+                                    "capacity": {
+                                        "type": "integer",
+                                        "example": 150
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Parking updated successfully"
+                    },
+                    "404": {
+                        "description": "Parking not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Parking"
+                ],
+                "summary": "Delete a parking",
+                "operationId": "abcefd5627338c4421d5cade45760c0d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Parking deleted successfully"
+                    },
+                    "404": {
+                        "description": "Parking not found"
+                    }
+                }
+            }
+        },
+        "/api/parkings/search": {
+            "get": {
+                "tags": [
+                    "Parking"
+                ],
+                "summary": "Search parkings by location and radius",
+                "operationId": "171d39878b9729482dd8782e6277f27c",
+                "parameters": [
+                    {
+                        "name": "latitude",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "float"
+                        },
+                        "example": 34.0522
+                    },
+                    {
+                        "name": "longitude",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "float"
+                        },
+                        "example": -118.2437
+                    },
+                    {
+                        "name": "radius",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 5
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of parkings found"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                }
+            }
+        },
+        "/api/reservations/{parkingId}": {
+            "post": {
+                "tags": [
+                    "Reservations"
+                ],
+                "summary": "Reserve a parking spot",
+                "description": "Allows a user to reserve a parking spot by providing their user ID and reservation timings.",
+                "operationId": "aab918522397b8add755abb4f50054a9",
+                "parameters": [
+                    {
+                        "name": "parkingId",
+                        "in": "path",
+                        "description": "ID of the parking spot to reserve",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "user_id",
+                                    "arrival_time",
+                                    "departure_time"
+                                ],
+                                "properties": {
+                                    "user_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "arrival_time": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2024-03-14T08:00:00"
+                                    },
+                                    "departure_time": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2024-03-14T10:00:00"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Reservation successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "user_id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "parking_id": {
+                                            "type": "integer",
+                                            "example": 5
+                                        },
+                                        "arrival_time": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        },
+                                        "departure_time": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                }
+            }
+        },
+        "/api/reservations/{reservationId}": {
+            "delete": {
+                "tags": [
+                    "Reservations"
+                ],
+                "summary": "Cancel a reservation",
+                "description": "Allows a user to cancel their reservation by ID.",
+                "operationId": "e0a7332ac924a9ed7463c11ff1fc7418",
+                "parameters": [
+                    {
+                        "name": "reservationId",
+                        "in": "path",
+                        "description": "ID of the reservation to cancel",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Reservation cancelled successfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                }
+            }
+        },
+        "/api/reservations/user/{userId}": {
+            "get": {
+                "tags": [
+                    "Reservations"
+                ],
+                "summary": "Get user reservations",
+                "description": "Fetch all reservations of a specific user.",
+                "operationId": "a768431d9f3ef1d5e7ccab7db61a7374",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of reservations"
+                    },
+                    "404": {
+                        "description": "No reservations found"
+                    }
+                }
+            }
+        },
+        "/api/reservations/my": {
+            "get": {
+                "tags": [
+                    "Reservations"
+                ],
+                "summary": "Get my reservations",
+                "description": "Fetch all reservations of the currently authenticated user.",
+                "operationId": "d8e56659e8c4c2efd81f16997b81d7e5",
+                "responses": {
+                    "200": {
+                        "description": "List of reservations"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Admin",
+            "description": "Endpoints for admin functionalities"
+        },
+        {
+            "name": "Authentication",
+            "description": "Endpoints for user authentication"
+        },
+        {
+            "name": "Parking",
+            "description": "API Endpoints for managing parkings"
+        },
+        {
+            "name": "Reservations",
+            "description": "Endpoints for managing parking reservations"
+        }
+    ]
+}

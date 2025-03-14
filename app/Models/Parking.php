@@ -15,8 +15,13 @@ class Parking extends Model
         'name',
         'location',
         'total_places',
-        'available_places'
+        'available_places',
+        'latitude',
+        'longitude',
     ];
 
-
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class);
+    }
 }
