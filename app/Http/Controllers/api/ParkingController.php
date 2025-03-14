@@ -194,7 +194,9 @@ class ParkingController extends Controller
     {
         try {
             $this->parkingService->deleteParking($id);
-            return response()->noContent();
+            return response()->json([
+                'message' => 'Parking deleted successfully!'
+            ]);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 404);
         }

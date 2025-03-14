@@ -7,24 +7,26 @@ use App\Http\Controllers\api\AdminController;
 use App\Http\Controllers\api\ParkingController;
 use App\Http\Controllers\api\ReservationController;
 
-Route::apiResource('/parkings', ParkingController::class);
 
+// authentification routes
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
 
-Route::get('/parkings/{id}', [ParkingController::class, 'show']);
+// Parkings routes
 Route::get('/parkings/search', [ParkingController::class, 'search']);
-// Route::get('/parkings/search', [ParkingController::class, 'search']);
+Route::apiResource('/parkings', ParkingController::class);
 
+// reservation routes
 Route::post('/parkings/{id}/reserve', [ReservationController::class, 'reserve']);
 Route::delete('/reservations/{id}/cancel', [ReservationController::class, 'cancel']);
+
+// historique of reservations
 Route::middleware('auth:sanctum')->get('/reservations/my-reservations', [ReservationController::class, 'myReservations']);
 
+
+// statistics
 Route::middleware(['auth:sanctum'])->get('/admin/statistics', [AdminController::class, 'parkingStatistics']);
 
 Route::get('/test', function () {

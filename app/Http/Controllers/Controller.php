@@ -9,7 +9,7 @@ namespace App\Http\Controllers;
  *     description="API for managing parking spot reservations, including booking, cancellation, and retrieving user reservations.",
  *     termsOfService="http://example.com/terms",
  *     contact={
- *         "email": "support@example.com"
+ *         "email": "jadthegamer@gmail.com"
  *     }
  * )
  */
